@@ -1,0 +1,33 @@
+# import libraries
+import requests
+import csv
+from bs4 import BeautifulSoup
+
+# gets Pitchfork review links and writes them to csv
+def writeReviewLinks(start, end):
+
+	link_list = []
+
+	# store URLs in a list, database has 1609 pages as of 9/15/2017
+	
+	while start <= end:
+		page = requests.get("https://pitchfork.com/reviews/albums/?page=" + str(start))
+		soup = BeautifulSoup(page.content, 'html.parser')
+		review_list = soup.find_all(class_="album-link")
+		
+		i = 0
+		while i < len(review_list):
+			link_list.append(str(review_list[i]["href"]))
+			i += 1
+		print(str(start) + " of " + str(end))
+		start += 1
+
+	# write list to csv
+	with open("links.csv", "a") as f:
+	        writeFile = csv.writer(f)
+	        writeFile.writerow(link_list)
+
+
+writeReviewLinks(1, 5)
+
+
