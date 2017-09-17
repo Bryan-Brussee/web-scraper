@@ -19,15 +19,11 @@ def writeReviewLinks(start, end):
 		while i < len(review_list):
 			link_list.append(str(review_list[i]["href"]))
 			i += 1
-		print(str(start) + " of " + str(end))
+		print("Gathering links: " + str(start) + " of " + str(end))
 		start += 1
 
-	# write list to csv
-	with open("links.csv", "a") as f:
-	        writeFile = csv.writer(f)
-	        writeFile.writerow(link_list)
+	return link_list
 
 
-writeReviewLinks(1, 5)
 
 

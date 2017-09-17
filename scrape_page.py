@@ -1,10 +1,18 @@
 # import libraries
+# encoding=utf8
+
 import requests
 from bs4 import BeautifulSoup
+from django.utils.encoding import smart_str, smart_unicode
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+
 
 def scrapePage(url): 
 	# grab the page
-	page = requests.get(url)
+	page = requests.get("https://pitchfork.com" + url)
 	soup = BeautifulSoup(page.content, 'html.parser')
 
 	# grab the html elements
@@ -19,7 +27,7 @@ def scrapePage(url):
 
 
 	# artist string
-	artist = str(artist_raw[0].get_text())
+	artist = artist_raw[0].get_text()
 
 	# album list
 	albums = []
@@ -31,9 +39,14 @@ def scrapePage(url):
 
 	i = 0
 	while i < len(albums_raw):
-		albums.append(str(albums_raw[i].get_text()))
+		albums.append(albums_raw[i].get_text())
 		scores.append(float(scores_raw[i].get_text()))
-		bnm_list.append(str(bnm_raw[i]["class"][1]))
+		# bnm_list.append(bnm_raw[i]["class"][1])
+		if bnm_raw[i]["class"][1] == "bnm":
+			status = soup.find_all(class_=("bnm-txt"))
+			bnm_list.append(status[i].get_text())
+		else:
+			bnm_list.append("")
 		i += 1
 
 	# build genre list
@@ -43,8 +56,8 @@ def scrapePage(url):
 		i += 1
 
 	# pull author data
-	author = str(author_raw[0].get_text())
-	author_detail = str(author_detail_raw[0].get_text())
+	author = author_raw[0].get_text()
+	author_detail = author_detail_raw[0].get_text()
 
 	# get the date attribute from the time tag
 	time_tag = date_raw[0]
@@ -54,17 +67,10 @@ def scrapePage(url):
 	data = []
 	i = 0
 	while i < len(albums):
-		data.append([artist, albums[i], genre, scores[i], bnm_list[i], author, author_detail, date])
+		data.append([albums[i], artist, genre, scores[i], bnm_list[i], author, author_detail, date])
 		i += 1
 
 	return(data)
-
-
-
-
-
-
-
 
 
 
