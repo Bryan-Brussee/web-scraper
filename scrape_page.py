@@ -16,7 +16,7 @@ def scrapePage(url):
 	soup = BeautifulSoup(page.content, 'html.parser')
 
 	# grab the html elements
-	artist_raw = soup.select("ul.artist-list li  a")
+	artist_raw = soup.select("ul.artist-list li")
 	albums_raw = soup.find_all(class_="review-title")
 	genre_list = soup.find_all(class_="genre-list__link")
 	scores_raw = soup.find_all(class_="score")
@@ -57,7 +57,11 @@ def scrapePage(url):
 
 	# pull author data
 	author = author_raw[0].get_text()
-	author_detail = author_detail_raw[0].get_text()
+
+	if len(author_detail_raw) > 0:
+		author_detail = author_detail_raw[0].get_text()
+	else:
+		author_detail = ""
 
 	# get the date attribute from the time tag
 	time_tag = date_raw[0]
@@ -74,4 +78,6 @@ def scrapePage(url):
 
 
 
+# test = scrapePage("/reviews/albums/23225-howsla/")
+# print(test)
 

@@ -4,7 +4,7 @@ import csv
 from bs4 import BeautifulSoup
 
 # gets Pitchfork review links and writes them to csv
-def writeReviewLinks(start, end):
+def getReviewLinks(start, end):
 
 	link_list = []
 
