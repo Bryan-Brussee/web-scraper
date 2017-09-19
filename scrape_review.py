@@ -10,14 +10,13 @@ sys.setdefaultencoding('utf8')
 
 
 
-def scrapePage(url): 
+def scrapeReview(url): 
 	# grab the page
 	page = requests.get("https://pitchfork.com" + url)
 	soup = BeautifulSoup(page.content, 'html.parser')
 
 	# grab the html elements
-	artist_raw = soup.select("ul.artist-list li")
-	artist_raw = soup.find_all(class_="artists")
+	artists_list = soup.find_all(class_="artists")
 	albums_raw = soup.find_all(class_="review-title")
 	genre_list = soup.find_all(class_="genre-list__link")
 	scores_raw = soup.find_all(class_="score")
@@ -35,30 +34,15 @@ def scrapePage(url):
 	data = []
 
 
-	# # artist string
-	# if (len(artist_raw) > 1) and (artist_raw[0].get_text() != artist_raw[1].get_text()):
-	# 	i = 0
-	# 	while i < len(artist_raw):
-	# 		artist.append(artist_raw[i].get_text())
-	# 		i += 1
-	# 	artist = ', '.join(artist)
-	# else: 
-	# 	artist = artist_raw[0].get_text()
-
-
-
-	# xxx = " ".join(name)
-
-
 	# get album data
 	i = 0
 	while i < len(albums_raw):
 
-		# jump through some hoops to make sure artist names come in right
-		artist_a = artist_raw[i].find_all('a')
-		name = [a.get_text() for a in artist_a]
-		testtest = "/".join(name)
-		artist.append(testtest)
+		# jump through some hoops to make sure artists' names come in right
+		artist_a_elements = artists_list[i].find_all('a')
+		name_list = [a.get_text() for a in artist_a_elements]
+		name_string = "/".join(name_list)
+		artist.append(name_string)
 
 		# fairly straight forward gathering of album names and scores
 		albums.append(albums_raw[i].get_text())
@@ -100,6 +84,4 @@ def scrapePage(url):
 
 	return(data)
 
-test = scrapePage("/reviews/albums/21899-999/")
-print(test)
 
