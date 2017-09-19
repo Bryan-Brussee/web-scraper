@@ -25,11 +25,11 @@ def scrapeDatabase(start, end):
 
 	i = start
 	while i <= end:
-		print("Gathering links: Page " + str(start) + " of " + str(end))
+		print("Gathering links: Page " + str(i) + " of " + str(end))
 
 		scrapeAlbumReviewPage(i)
 		print("Page "+ str(i) + " scraped.")
 		i += 1
 
-scrapeDatabase(12, 12)
+scrapeDatabase(71, 500)
 

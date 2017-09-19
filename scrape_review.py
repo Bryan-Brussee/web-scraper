@@ -5,48 +5,42 @@ import requests
 from bs4 import BeautifulSoup
 from django.utils.encoding import smart_str, smart_unicode
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
-
 
 def scrapeReview(url): 
+
+	reload(sys)
+	sys.setdefaultencoding('utf8')
+
 	# grab the page
 	page = requests.get("https://pitchfork.com" + url)
 	soup = BeautifulSoup(page.content, 'html.parser')
 
 	# grab the html elements
-	artists_list = soup.find_all(class_="artists")
-	albums_raw = soup.find_all(class_="review-title")
+	artists_soup = soup.find_all(class_="artists")
 	genre_list = soup.find_all(class_="genre-list__link")
-	scores_raw = soup.find_all(class_="score")
 	bnm_raw = soup.find_all(class_="score-box")
-	author_raw = soup.select("a.authors-detail__display-name")
-	author_detail_raw = soup.select("span.authors-detail__title")
-	date_raw = soup.select("time.pub-date")
+	author = soup.find(class_="authors-detail__display-name").get_text()
+	author_detail = soup.find(class_="author_detail__display-name")
+	date = soup.find(class_="pub-date")
 
 	# album list
-	albums = []
+	albums = [i.get_text() for i in soup.find_all(class_="review-title")]
 	artist = []
-	scores = []
+	scores = [float(i.get_text()) for i in soup.find_all(class_="score")]
 	bnm_list = []
-	genre = []
-	data = []
-
+	genre = " ,".join([i.get_text() for i in soup.find_all(class_="genre-list__link")])
 
 	# get album data
 	i = 0
-	while i < len(albums_raw):
+	while i < len(albums):
 
 		# jump through some hoops to make sure artists' names come in right
-		artist_a_elements = artists_list[i].find_all('a')
+		artist_a_elements = artists_soup[i].find_all('a')
 		name_list = [a.get_text() for a in artist_a_elements]
 		name_string = "/".join(name_list)
 		artist.append(name_string)
 
 		# fairly straight forward gathering of album names and scores
-		albums.append(albums_raw[i].get_text())
-		scores.append(float(scores_raw[i].get_text()))
 
 		# tag best new music and best new reissues
 		if bnm_raw[i]["class"][1] == "bnm":
@@ -56,24 +50,14 @@ def scrapeReview(url):
 			bnm_list.append("")
 		i += 1
 
-
-	# build genre list
-	i = 0
-	while i < len(genre_list):
-		genre.append(genre_list[i].get_text())
-		i += 1
-	genre = ", ".join(genre)
-
-	# pull author data
-	author = author_raw[0].get_text()
-	if len(author_detail_raw) > 0:
-		author_detail = author_detail_raw[0].get_text()
-	else:
+	# pull author data	
+	if author_detail == None:
 		author_detail = ""
+	else:
+		author_detail = author_detail.get_text()
 
 	# get the date attribute from the time tag
-	time_tag = date_raw[0]
-	date = str(time_tag['title'])
+	date = str(date['title'])
 
 	# store the data in a list
 	data = []
@@ -84,4 +68,5 @@ def scrapeReview(url):
 
 	return(data)
 
-
+test = scrapeReview("/reviews/albums/22393-unfinished-music-no-1-two-virgins-unfinished-music-no-2-life-with-the-lions-yoko-ono-plastic-ono-band/")
+print(test)
