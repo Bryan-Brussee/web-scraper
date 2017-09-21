@@ -17,18 +17,17 @@ def scrapeReview(url):
 
 	# grab the html elements
 	artists_soup = soup.find_all(class_="artists")
-	genre_list = soup.find_all(class_="genre-list__link")
-	bnm_raw = soup.find_all(class_="score-box")
+	bnm_soup = soup.find_all(class_="score-box")
 	author = soup.find(class_="authors-detail__display-name").get_text()
-	author_detail = soup.find(class_="author_detail__display-name")
-	date = soup.find(class_="pub-date")
+	author_detail = soup.find(class_="authors-detail__title")
 
 	# album list
 	albums = [i.get_text() for i in soup.find_all(class_="review-title")]
 	artist = []
+	genre = " ,".join([i.get_text() for i in soup.find_all(class_="genre-list__link")])
 	scores = [float(i.get_text()) for i in soup.find_all(class_="score")]
 	bnm_list = []
-	genre = " ,".join([i.get_text() for i in soup.find_all(class_="genre-list__link")])
+	date = str(soup.find(class_="pub-date")["title"])
 
 	# get album data
 	i = 0
@@ -40,10 +39,8 @@ def scrapeReview(url):
 		name_string = "/".join(name_list)
 		artist.append(name_string)
 
-		# fairly straight forward gathering of album names and scores
-
 		# tag best new music and best new reissues
-		if bnm_raw[i]["class"][1] == "bnm":
+		if bnm_soup[i]["class"][1] == "bnm":
 			status = soup.find_all(class_=("bnm-txt"))
 			bnm_list.append(status.pop(0).get_text())
 		else:
@@ -56,9 +53,6 @@ def scrapeReview(url):
 	else:
 		author_detail = author_detail.get_text()
 
-	# get the date attribute from the time tag
-	date = str(date['title'])
-
 	# store the data in a list
 	data = []
 	i = 0
@@ -68,5 +62,5 @@ def scrapeReview(url):
 
 	return(data)
 
-test = scrapeReview("/reviews/albums/22393-unfinished-music-no-1-two-virgins-unfinished-music-no-2-life-with-the-lions-yoko-ono-plastic-ono-band/")
+test = scrapeReview("/reviews/albums/corbin-mourn/")
 print(test)

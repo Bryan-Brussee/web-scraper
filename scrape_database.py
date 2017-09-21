@@ -11,7 +11,7 @@ def scrapeAlbumReviewPage(page):
 
 	with open("data.csv", "a") as f:
 	        writeFile = csv.writer(f, dialect="excel")
-	        # writeFile.writerow(["Album", "Artist", "Genre", "Score", "Best New Music", "Reviewer", "Reviewer Detail", "Date", "URL"])
+	        writeFile.writerow(["Album", "Artist", "Genre", "Score", "Best New Music", "Reviewer", "Reviewer Detail", "Date", "URL"])
 	        i = 0
 	        while i < len(review_links):
 	        	writeFile.writerows(scrapeReview(review_links[i]))
@@ -31,5 +31,5 @@ def scrapeDatabase(start, end):
 		print("Page "+ str(i) + " scraped.")
 		i += 1
 
-scrapeDatabase(71, 500)
+scrapeDatabase(1, 1)
 
