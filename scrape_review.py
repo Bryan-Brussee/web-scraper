@@ -34,8 +34,8 @@ def scrapeReview(url):
 	while i < len(albums):
 
 		# jump through some hoops to make sure artists' names come in right
-		artist_a_elements = artists_soup[i].find_all('a')
-		name_list = [a.get_text() for a in artist_a_elements]
+		artist_li_elements = artists_soup[i].find_all('li')
+		name_list = [li.get_text() for li in artist_li_elements]
 		name_string = "/".join(name_list)
 		artist.append(name_string)
 
@@ -62,5 +62,13 @@ def scrapeReview(url):
 
 	return(data)
 
-test = scrapeReview("/reviews/albums/corbin-mourn/")
-print(test)
+
+# test cases
+
+# various artists tag
+# test = scrapeReview("/reviews/albums/16926-just-tell-me-that-you-want-me-tribute-to-fleetwood-mac/")
+# print(test)
+
+# # multiple artist attribution
+# test = scrapeReview("/reviews/albums/22393-unfinished-music-no-1-two-virgins-unfinished-music-no-2-life-with-the-lions-yoko-ono-plastic-ono-band/")
+# print(test)
